@@ -1,0 +1,1001 @@
+Build a complete, fully functional web application called:
+
+STEGOCRYPT
+Secure Text & Image Communication using AES + LSB Steganography
+
+IMPORTANT:
+This must be a REAL WORKING WEB APPLICATION, not a static UI prototype.
+
+Do NOT require Java, JDK, NetBeans, Eclipse, IntelliJ, a Java backend, or any external Java implementation.
+
+Reimplement the complete functionality of the original Java-based StegoCrypt concept using browser-compatible JavaScript/TypeScript so that everything works directly in the website.
+
+PROJECT OBJECTIVE
+
+The application demonstrates hybrid secure communication by combining:
+
+1. AES encryption for confidentiality
+2. LSB image steganography for hiding encrypted data
+3. Extraction of hidden encrypted data
+4. AES decryption for recovering the original message
+
+The complete flow must work inside the browser.
+
+CORE WORKFLOW
+
+SENDER:
+
+User enters:
+- Secret message
+- AES password/key
+- Cover image
+
+Then:
+
+Plaintext
+   ↓
+AES Encryption
+   ↓
+Ciphertext
+   ↓
+Convert ciphertext to binary
+   ↓
+LSB Embedding into image
+   ↓
+Stego Image
+   ↓
+Download/share stego image
+
+RECEIVER:
+
+User uploads:
+- Stego image
+- AES password/key
+
+Then:
+
+Stego Image
+   ↓
+LSB Extraction
+   ↓
+Encrypted ciphertext
+   ↓
+AES Decryption
+   ↓
+Original plaintext
+
+The sender and receiver workflows must be connected and actually interoperable.
+
+--------------------------------------------------
+TECHNOLOGY
+--------------------------------------------------
+
+Use:
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Modern responsive UI
+- Browser Web APIs
+- Web Crypto API for AES
+- Canvas API for image pixel manipulation
+- No Java
+- No Python backend
+- No external server required for core cryptography
+- No database required
+
+Use client-side processing wherever possible so that sensitive messages and images do not need to leave the browser.
+
+For AES:
+
+Use the browser Web Crypto API.
+
+Prefer:
+AES-GCM
+
+Use a secure random IV/nonce for every encryption operation.
+
+Derive an AES key from the user's password using:
+
+PBKDF2 + SHA-256
+
+Use a random salt.
+
+Store the required metadata needed for decryption inside the steganographic payload.
+
+Do NOT simply use a raw password directly as an AES key.
+
+--------------------------------------------------
+MAIN APPLICATION STRUCTURE
+--------------------------------------------------
+
+Create the following pages/tabs:
+
+1. Dashboard
+2. Encode Message
+3. Decode Message
+4. How It Works
+5. Security Analysis
+6. About Project
+
+The main navigation should be:
+
+STEGOCRYPT logo
+
+Dashboard
+Encode
+Decode
+How It Works
+Security
+About
+
+Include a clean modern cybersecurity visual style.
+
+--------------------------------------------------
+DASHBOARD
+--------------------------------------------------
+
+Create an attractive dashboard explaining:
+
+"Secure communication through encryption and concealment."
+
+Show four feature cards:
+
+AES Encryption
+LSB Steganography
+Secure Extraction
+Image Quality Analysis
+
+Also show a visual pipeline:
+
+Message
+→ AES Encryption
+→ Ciphertext
+→ LSB Embedding
+→ Stego Image
+
+and:
+
+Stego Image
+→ LSB Extraction
+→ Ciphertext
+→ AES Decryption
+→ Message
+
+Include buttons:
+
+[Encode Secret Message]
+[Decode Hidden Message]
+
+Also show a small project description:
+
+"StegoCrypt combines cryptographic confidentiality with image-based data concealment."
+
+--------------------------------------------------
+ENCODE PAGE
+--------------------------------------------------
+
+Create a professional encoder interface.
+
+LEFT SIDE:
+
+Section:
+"1. Enter Secret Message"
+
+Large textarea:
+
+Placeholder:
+"Type the confidential message you want to hide..."
+
+Show:
+
+Characters: 0
+Estimated payload size: 0 bytes
+
+Section:
+"2. Enter Encryption Password"
+
+Password field.
+
+Add:
+Show/Hide password
+
+Password strength indicator:
+
+Weak
+Medium
+Strong
+
+Section:
+"3. Upload Cover Image"
+
+Drag-and-drop area.
+
+Accept:
+
+PNG
+BMP
+JPG/JPEG if possible
+
+IMPORTANT:
+
+Because LSB modification requires pixel-level access, convert uploaded images to PNG internally before generating the final stego image.
+
+Display uploaded image preview.
+
+Show:
+
+Image width
+Image height
+Number of channels
+Total pixel capacity
+Estimated available payload capacity
+
+Then display:
+
+Payload required:
+XXXX bytes
+
+Capacity:
+XXXX bytes
+
+Capacity status:
+
+✓ Enough capacity
+
+or
+
+✗ Image too small
+
+Do not allow embedding when the payload exceeds capacity.
+
+--------------------------------------------------
+AES ENCRYPTION
+--------------------------------------------------
+
+When user clicks:
+
+"Encrypt & Embed"
+
+Perform these actual operations:
+
+1. Generate random salt.
+2. Derive AES key from password using PBKDF2.
+3. Generate random IV/nonce.
+4. Encrypt plaintext using AES-GCM.
+5. Convert encrypted result into a binary payload.
+6. Add a small structured payload header containing:
+   - Magic identifier: STEGOCRYPT
+   - Version
+   - Algorithm identifier
+   - Salt
+   - IV
+   - Ciphertext length
+7. Convert complete payload into bits.
+8. Embed bits into image pixels using LSB.
+
+Do not merely simulate these operations.
+
+The generated stego image must contain the actual encrypted payload.
+
+--------------------------------------------------
+LSB STEGANOGRAPHY
+--------------------------------------------------
+
+Implement real LSB image embedding using Canvas ImageData.
+
+For each pixel:
+
+Read RGB/RGBA values.
+
+Modify the least significant bit of pixel channels.
+
+Prefer using RGB channels and preserve alpha.
+
+For example:
+
+R → R with modified LSB
+G → G with modified LSB
+B → B with modified LSB
+
+Do not unnecessarily modify alpha.
+
+Create a deterministic bit sequence from the payload.
+
+The extraction algorithm must reverse the exact embedding process.
+
+IMPORTANT:
+
+The application must be able to:
+
+Encode message → download stego image → refresh website → upload stego image → enter password → successfully recover the original message.
+
+This must work independently of application state.
+
+--------------------------------------------------
+STEGO IMAGE RESULT
+--------------------------------------------------
+
+After successful embedding, display:
+
+"Message successfully hidden."
+
+Show:
+
+Original Image
+        vs
+Stego Image
+
+Side-by-side.
+
+Display:
+
+Original Size
+Stego Size
+Payload Size
+Embedding Capacity
+PSNR
+MSE
+SSIM if practical
+
+Create an image comparison slider if possible.
+
+Buttons:
+
+[Download Stego Image]
+[Start New Encoding]
+
+Download the generated PNG as:
+
+stegocrypt_stego.png
+
+Also provide:
+
+[Copy Encryption Metadata]
+
+but never expose the password.
+
+--------------------------------------------------
+PSNR / IMAGE QUALITY
+--------------------------------------------------
+
+Implement actual image quality analysis.
+
+Calculate:
+
+MSE
+PSNR
+
+Formula:
+
+MSE = average squared pixel difference
+
+PSNR = 10 × log10(MAX² / MSE)
+
+For RGB images use the RGB pixel differences.
+
+Display:
+
+MSE:
+0.00...
+
+PSNR:
+XX.XX dB
+
+Interpretation:
+
+Higher PSNR = lower visible distortion.
+
+Use the project's target concept of maintaining high visual quality.
+
+Do not falsely claim a guaranteed PSNR value.
+
+Calculate the actual value for the uploaded image.
+
+--------------------------------------------------
+DECODE PAGE
+--------------------------------------------------
+
+Create a receiver interface.
+
+Section:
+
+"Upload Stego Image"
+
+Drag-and-drop area.
+
+Show image preview.
+
+Then:
+
+"Enter Decryption Password"
+
+Password input.
+
+Button:
+
+[Extract & Decrypt]
+
+When clicked:
+
+1. Read image pixels.
+2. Extract LSB bits.
+3. Reconstruct payload.
+4. Verify STEGOCRYPT magic identifier.
+5. Read metadata.
+6. Extract salt.
+7. Extract IV.
+8. Extract ciphertext.
+9. Derive AES key from entered password.
+10. Decrypt using AES-GCM.
+11. Display recovered plaintext.
+
+If password is incorrect:
+
+Show:
+
+"Unable to decrypt. The password may be incorrect or the image may not contain a valid StegoCrypt payload."
+
+Do NOT expose cryptographic internals unnecessarily.
+
+--------------------------------------------------
+EXTRACTION VISUALIZATION
+--------------------------------------------------
+
+After successful extraction, display a visual step-by-step animation:
+
+Stego Image
+↓
+Reading Pixels
+↓
+Extracting LSB Bits
+↓
+Reconstructing Payload
+↓
+Recovering Ciphertext
+↓
+AES Decryption
+↓
+Original Message
+
+Use animated progress indicators.
+
+Allow users to expand each stage to see what happened.
+
+--------------------------------------------------
+DECODE RESULT
+--------------------------------------------------
+
+Display:
+
+"Message Successfully Recovered"
+
+Large read-only text area containing original plaintext.
+
+Also display:
+
+Encryption:
+AES-GCM
+
+Key Derivation:
+PBKDF2-SHA-256
+
+Steganography:
+LSB
+
+Payload:
+XX bytes
+
+Image:
+WIDTH × HEIGHT
+
+Buttons:
+
+[Copy Message]
+[Download Message]
+[Decode Another Image]
+
+--------------------------------------------------
+HOW IT WORKS PAGE
+--------------------------------------------------
+
+Create an educational interactive explanation.
+
+Section 1:
+What is Cryptography?
+
+Explain AES.
+
+Section 2:
+What is Steganography?
+
+Explain hiding information inside an image.
+
+Section 3:
+Why combine them?
+
+Show:
+
+AES = hides the CONTENT
+
+LSB = hides the EXISTENCE
+
+Section 4:
+Complete architecture.
+
+Create an interactive architecture diagram:
+
+USER
+ ↓
+INPUT MESSAGE
+ ↓
+AES ENCRYPTION
+ ↓
+CIPHERTEXT
+ ↓
+BINARY PAYLOAD
+ ↓
+LSB EMBEDDING
+ ↓
+STEGO IMAGE
+ ↓
+TRANSMISSION
+ ↓
+LSB EXTRACTION
+ ↓
+CIPHERTEXT
+ ↓
+AES DECRYPTION
+ ↓
+ORIGINAL MESSAGE
+
+Each component should be clickable and show an explanation.
+
+--------------------------------------------------
+SECURITY ANALYSIS PAGE
+--------------------------------------------------
+
+Create a dashboard explaining the security characteristics.
+
+Cards:
+
+Confidentiality
+AES-GCM
+
+Concealment
+LSB Steganography
+
+Integrity
+AES-GCM Authentication Tag
+
+Randomization
+Random Salt + IV
+
+Key Derivation
+PBKDF2-SHA-256
+
+Also create a "Threat Analysis" section.
+
+Explain:
+
+Brute Force
+Password strength matters.
+
+Image Tampering
+Changes to embedded bits may corrupt the payload.
+
+Steganalysis
+Basic LSB steganography may be detectable statistically.
+
+Capacity
+Large payloads may require larger images.
+
+Password Loss
+Without the correct password, the encrypted message cannot normally be recovered.
+
+Be technically accurate.
+
+Do NOT claim that LSB steganography is undetectable.
+
+--------------------------------------------------
+INTERACTIVE BIT VISUALIZER
+--------------------------------------------------
+
+Add an educational tool showing how LSB works.
+
+Display a pixel table:
+
+Pixel | Binary | Modified Binary | LSB
+
+Example:
+
+R = 154
+Binary = 10011010
+Message bit = 1
+Modified = 10011011
+
+Allow the user to enter a small binary message.
+
+Animate how message bits replace LSBs.
+
+This is an educational visualization and should use the same basic logic as the actual encoder.
+
+--------------------------------------------------
+IMAGE CAPACITY CALCULATOR
+--------------------------------------------------
+
+Create a standalone calculator.
+
+Inputs:
+
+Image width
+Image height
+Channels
+
+Calculate:
+
+Total pixels
+Available RGB channels
+Maximum raw LSB capacity
+Approximate usable payload capacity
+
+Show:
+
+"Can this image store your message?"
+
+Use an interactive progress bar.
+
+--------------------------------------------------
+SECURITY / PRIVACY
+--------------------------------------------------
+
+Add a prominent privacy notice:
+
+"Your message and images are processed locally in your browser whenever possible. No secret message or password is intentionally uploaded to a server."
+
+Do not store passwords.
+
+Do not log plaintext messages.
+
+Do not send secret content to analytics.
+
+Clear sensitive state when starting a new operation.
+
+--------------------------------------------------
+UI DESIGN
+--------------------------------------------------
+
+Design should look like a modern cybersecurity product.
+
+Use:
+
+Dark navy/black background.
+
+Subtle green/cyan accents.
+
+Glassmorphism cards.
+
+Soft gradients.
+
+Minimal glowing borders.
+
+Modern typography.
+
+Use icons for:
+
+Lock
+Shield
+Image
+Key
+Encryption
+Network
+Security
+Download
+Upload
+
+Avoid excessive neon effects.
+
+The website should look professional enough for:
+
+College project demonstration
+Hackathon presentation
+Project viva
+Portfolio/GitHub project
+
+--------------------------------------------------
+RESPONSIVE DESIGN
+--------------------------------------------------
+
+Must work properly on:
+
+Desktop
+Laptop
+Tablet
+Mobile
+
+Desktop should use a two-column layout where appropriate.
+
+Mobile should stack sections vertically.
+
+--------------------------------------------------
+ERROR HANDLING
+--------------------------------------------------
+
+Handle:
+
+No message entered
+No password entered
+No image selected
+Unsupported image
+Corrupted image
+Image too small
+Payload too large
+Invalid stego image
+Wrong password
+Modified/corrupted stego image
+Invalid payload header
+Decryption failure
+
+Use friendly error messages.
+
+Do not crash the application.
+
+--------------------------------------------------
+IMPORTANT TECHNICAL REQUIREMENT
+--------------------------------------------------
+
+This is NOT a mockup.
+
+Every major button must perform the actual operation.
+
+Specifically these must really work:
+
+✓ AES encryption
+✓ AES decryption
+✓ Password-based key derivation
+✓ Random salt
+✓ Random IV
+✓ LSB embedding
+✓ LSB extraction
+✓ Image processing
+✓ Stego image generation
+✓ Stego image download
+✓ Stego image re-upload
+✓ Message recovery
+✓ PSNR calculation
+✓ MSE calculation
+✓ Capacity calculation
+✓ Wrong password detection
+✓ Payload validation
+
+--------------------------------------------------
+SELF-TEST / DEMO MODE
+--------------------------------------------------
+
+Add a "Run System Test" button on the dashboard.
+
+When clicked, automatically:
+
+1. Create a demo message:
+"StegoCrypt secure communication test."
+
+2. Create a small generated test image.
+
+3. Encrypt the demo message.
+
+4. Embed it.
+
+5. Extract it.
+
+6. Decrypt it.
+
+7. Compare original and recovered message.
+
+Display:
+
+AES Encryption       PASS
+LSB Embedding        PASS
+LSB Extraction       PASS
+AES Decryption       PASS
+Message Integrity    PASS
+
+Final result:
+
+"All StegoCrypt core operations completed successfully."
+
+This allows the project to be demonstrated even without uploading an image.
+
+--------------------------------------------------
+PROJECT DEMONSTRATION MODE
+--------------------------------------------------
+
+Add a "Presentation Mode".
+
+This should provide a guided demonstration:
+
+STEP 1
+Enter message
+
+STEP 2
+Encrypt with AES
+
+STEP 3
+Show ciphertext preview
+
+STEP 4
+Convert ciphertext to binary
+
+STEP 5
+Show LSB embedding
+
+STEP 6
+Generate stego image
+
+STEP 7
+Extract hidden data
+
+STEP 8
+Decrypt
+
+STEP 9
+Show original message
+
+Use animations between stages.
+
+--------------------------------------------------
+DATA FLOW VISUALIZATION
+--------------------------------------------------
+
+At the top of the Encode and Decode pages show a progress tracker.
+
+Encode:
+
+INPUT
+→ ENCRYPT
+→ EMBED
+→ STEGO IMAGE
+
+Decode:
+
+STEGO IMAGE
+→ EXTRACT
+→ DECRYPT
+→ MESSAGE
+
+Highlight the current step.
+
+--------------------------------------------------
+NO JAVA REQUIREMENT
+--------------------------------------------------
+
+The original academic implementation uses Java.
+
+For this web implementation:
+
+DO NOT install or require Java.
+
+DO NOT ask the user to run Java code.
+
+DO NOT create a Java backend.
+
+DO NOT create fake Java execution.
+
+Instead, implement the equivalent functionality using:
+
+TypeScript
+Web Crypto API
+Canvas API
+Browser APIs
+
+Mention in the About page:
+
+"This web version reimplements the core StegoCrypt methodology in browser-native technologies while preserving the AES + LSB hybrid communication concept."
+
+--------------------------------------------------
+CODE QUALITY
+--------------------------------------------------
+
+Organize the project into reusable modules/components.
+
+Suggested structure:
+
+src/
+  components/
+    Navbar
+    Footer
+    ImageUploader
+    PasswordInput
+    EncryptionPanel
+    DecryptionPanel
+    LSBVisualizer
+    ImageComparison
+    QualityMetrics
+    ArchitectureDiagram
+    ProgressStepper
+    CapacityCalculator
+
+  crypto/
+    aes.ts
+    keyDerivation.ts
+    payload.ts
+
+  steganography/
+    lsbEmbed.ts
+    lsbExtract.ts
+    capacity.ts
+
+  image/
+    imageProcessing.ts
+    metrics.ts
+
+  pages/
+    Dashboard
+    Encode
+    Decode
+    HowItWorks
+    Security
+    About
+
+Keep cryptographic logic separate from UI components.
+
+Add clear comments around the cryptographic and LSB algorithms.
+
+--------------------------------------------------
+FINAL ACCEPTANCE TEST
+--------------------------------------------------
+
+Before considering the project complete, verify this exact scenario:
+
+1. Open Encode page.
+2. Enter:
+
+"Hello, this is my secret message."
+
+3. Enter a password.
+4. Upload a PNG image.
+5. Click Encrypt & Embed.
+6. Generate stego image.
+7. Download stego image.
+8. Refresh the website.
+9. Open Decode.
+10. Upload the downloaded stego image.
+11. Enter the SAME password.
+12. Click Extract & Decrypt.
+13. The website MUST display:
+
+"Hello, this is my secret message."
+
+Then test:
+
+Wrong password
+→ decryption must fail.
+
+Tampered image
+→ payload validation/decryption should fail where detectable.
+
+Too-large message
+→ embedding must be rejected before modifying the image.
+
+--------------------------------------------------
+FINAL UI REQUIREMENT
+--------------------------------------------------
+
+Make the result feel like a complete cybersecurity product rather than a college form.
+
+Include:
+
+Professional landing/dashboard
+Interactive visualizations
+Real encryption
+Real steganography
+Real image processing
+Real metrics
+Animations
+Clear explanations
+Error handling
+Responsive design
+Demo mode
+Presentation mode
+
+The final website should be completely usable without Java or any external local setup beyond running the Lovable-generated web application.

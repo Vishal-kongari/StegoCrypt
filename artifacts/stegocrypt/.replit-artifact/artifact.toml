@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "StegoCrypt"
+description = "A browser-native secure communication workspace that combines AES-GCM encryption with LSB image steganography for private message exchange and education."
+version = "1.0.0"
+id = "artifacts/stegocrypt"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23412
+
+[services.development]
+run = "pnpm --filter @workspace/stegocrypt run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/stegocrypt", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/stegocrypt/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23412"
+BASE_PATH = "/"
